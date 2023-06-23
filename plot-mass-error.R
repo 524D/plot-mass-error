@@ -34,32 +34,23 @@ getMzId<-function(fileName, className, cometExpLim, maxPpmErr)
 
 ####################################################################################
 
-# If running in RStudio, supply "debug" command line args
-if (Sys.getenv("RSTUDIO") == "1") {
-    options=list("ppmerr" = 10, "exp" = 0.01, "nolegend" = FALSE, "outfile" = "")
+# Parse command line arguments
+optionList <- list(
+make_option(c("-e", "--exp"), default = 0.01, action='store',
+            help = "Comet expectation value limit  [default %default]"),
+make_option(c("-m", "--ppmerr"), default = 10, action='store',
+            help = "Maximum m/z ppm error to plot [default %default]"),
+make_option(c("-o", "--outfile"), default = "", action='store',
+            help = "Output filename [default first input filename]. The file extention is not used."),
+make_option(c("-L", "--nolegend"), default = FALSE, action='store_true',
+            help = "If set, no legend is shown."),
+make_option(c("-n", "--name"), default = "", action='store',
+            help = "Name of data, printed at top of picture.")
 
-    args=c("/home/robm/results/PXD000153/20011221_04_BarH_IM2_10to11.mzid",
-       "/home/robm/results/PXD000153/20011221_04_BarH_IM2_10to11-recal.mzid")
-    opt = list("options" = options, "args" = args)
-} else {
-    # Parse command line arguments
-    optionList <- list(
-    make_option(c("-e", "--exp"), default = 0.01, action='store',
-                help = "Comet expectation value limit  [default %default]"),
-    make_option(c("-m", "--ppmerr"), default = 10, action='store',
-                help = "Maximum m/z ppm error to plot [default %default]"),
-    make_option(c("-o", "--outfile"), default = "", action='store',
-                help = "Output filename [default first input filename]. The file extention is not used."),
-    make_option(c("-L", "--nolegend"), default = FALSE, action='store_true',
-                help = "If set, no legend is shown."),
-    make_option(c("-n", "--name"), default = "", action='store',
-                help = "Name of data, printed at top of picture.")
+)
 
-    )
-
-    parser <- OptionParser(option_list = optionList)
-    opt <- parse_args2(parser)
-}
+parser <- OptionParser(option_list = optionList)
+opt <- parse_args2(parser)
 
 outputFnBase <- ""
 # if no outputfile is specified, use the base name of the input file
@@ -99,16 +90,6 @@ for (i in c(2:length(opt$args))) {
     scores <- rbind(scores, scoresX)
 }
 
-# Create a text file with some numbers that indicate how well the recalibration worked
-scoreFile <- paste(outputFnBase, ".txt", sep="")
-sink(scoreFile)
-perfScore <- (scores$Mean[1]/scores$Mean[2] +
-          3*scores$SD[1]/scores$SD[2] +
-          10*scores$Count[2]/scores$Count[1])
-print(perfScore[[1]])
-print(scores)
-sink()
-
 # Before plotting, shuffle rows so that overlapping points get approximately fair color in plot
 set.seed(42)
 rows <- sample(nrow(mzidGood))
@@ -133,21 +114,6 @@ if (abs(x1-x2)<0.05 * maxPpmErr) {
     } else {
         x2 = x1 + 0.05 * maxPpmErr
     }
-}
-
-# Special case for files used in publication
-if (str_detect(outputFnBase, "120118ry_201B7-32_2_2")) {
-x1<- -7.1;
-y1<- 0.12;
-x2<- 2.5;
-y2<- 0.12;
-massScaleTxt <- "";
-}
-if (str_detect(outputFnBase, "GSC11_24h_R1")) {
-x1<- 1.25;
-y1<- 0.45;
-x2<- -1.25;
-y2<- 0.45;
 }
 
 myLegendPos <- "none";
