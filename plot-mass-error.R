@@ -77,17 +77,19 @@ scores <- data.frame("Class" = classNames[[1]],
                      "SD" = sd(mzidGood$ppmErr),
                      "Count" = length(mzidGood$ppmErr))
 
-for (i in c(2:length(opt$args))) {
-    mzIdVals <- getMzId(opt$args[i], classNames[i], opt$options$exp, maxPpmErr)
-    psms <- c(psms, mzIdVals$psms)
-    dens[[length(dens)+1]] <- density(mzIdVals$mzidGood$ppmErr)
-    # Append the good PSM's (with different class name)
-    mzidGood <- rbind(mzidGood, mzIdVals$mzidGood)
-    scoresX <- data.frame("Class" = classNames[[i]],
-                         "Mean" = mean( mzIdVals$mzidGood$ppmErr),
-                         "SD" = sd( mzIdVals$mzidGood$ppmErr),
-                         "Count" = length( mzIdVals$mzidGood$ppmErr))
-    scores <- rbind(scores, scoresX)
+if (length(opt$args)>1) {
+    for (i in c(2:length(opt$args))) {
+        mzIdVals <- getMzId(opt$args[i], classNames[i], opt$options$exp, maxPpmErr)
+        psms <- c(psms, mzIdVals$psms)
+        dens[[length(dens)+1]] <- density(mzIdVals$mzidGood$ppmErr)
+        # Append the good PSM's (with different class name)
+        mzidGood <- rbind(mzidGood, mzIdVals$mzidGood)
+        scoresX <- data.frame("Class" = classNames[[i]],
+                            "Mean" = mean( mzIdVals$mzidGood$ppmErr),
+                            "SD" = sd( mzIdVals$mzidGood$ppmErr),
+                            "Count" = length( mzIdVals$mzidGood$ppmErr))
+        scores <- rbind(scores, scoresX)
+    }
 }
 
 # Before plotting, shuffle rows so that overlapping points get approximately fair color in plot
@@ -97,22 +99,25 @@ mzidGood <- mzidGood[rows, ]
 
 # Make labels with number of PSMs in each class
 txt1 = paste("n=", psms[1], sep="")
-txt2 = paste("n=", psms[2], sep="")
 massScaleTxt <- "mass error (ppm)";
 # Position of labels with PSMs
 x1<- dens[[1]]$x[which.max(dens[[1]]$y)]
 y1_top = dens[[1]]$y[which.max(dens[[1]]$y)]
 y1<- y1_top * 0.4;
-x2<- dens[[2]]$x[which.max(dens[[2]]$y)]
-y2_top = dens[[2]]$y[which.max(dens[[2]]$y)]
-y2<- y2_top * 0.4;
+# Idem, for dataset 2
+if (length(opt$args)>1) {
+    txt2 = paste("n=", psms[2], sep="")
+    x2<- dens[[2]]$x[which.max(dens[[2]]$y)]
+    y2_top = dens[[2]]$y[which.max(dens[[2]]$y)]
+    y2<- y2_top * 0.4;
 
-# Ensure labels are separated vertically
-if (abs(x1-x2)<0.05 * maxPpmErr) {
-    if (x1 > 0.05 * maxPpmErr) {
-        x1 = x2 - 0.05 * maxPpmErr
-    } else {
-        x2 = x1 + 0.05 * maxPpmErr
+    # Ensure labels are separated vertically
+    if (abs(x1-x2)<0.05 * maxPpmErr) {
+        if (x1 > 0.05 * maxPpmErr) {
+            x1 = x2 - 0.05 * maxPpmErr
+        } else {
+            x2 = x1 + 0.05 * maxPpmErr
+        }
     }
 }
 
@@ -135,15 +140,26 @@ g <- ggplot(mzidGood, aes(x=calculatedMassToCharge, y=ppmErr, colour = class))+
         geom_smooth(method = "lm")
 
 
-gd = ggplot(mzidGood, aes(x=ppmErr, colour = class))  +
-        geom_density() +
-        coord_flip() +
-        theme(legend.position = "none",
-              text=element_text(size=12, family="sans")) +
-        scale_x_continuous(name=massScaleTxt, limits=c(-maxPpmErr, maxPpmErr)) +
-        scale_color_manual(values = colors) +
-        annotate(geom="text", x1, y1, label=txt1, color=colors[1]) +
-        annotate(geom="text", x2, y2, label=txt2, color=colors[2])
+if (length(opt$args) == 1) {
+    gd = ggplot(mzidGood, aes(x=ppmErr, colour = class))  +
+            geom_density() +
+            coord_flip() +
+            theme(legend.position = "none",
+                text=element_text(size=12, family="sans")) +
+            scale_x_continuous(name=massScaleTxt, limits=c(-maxPpmErr, maxPpmErr)) +
+            scale_color_manual(values = colors) +
+            annotate(geom="text", x1, y1, label=txt1, color=colors[1])
+} else {
+    gd = ggplot(mzidGood, aes(x=ppmErr, colour = class))  +
+            geom_density() +
+            coord_flip() +
+            theme(legend.position = "none",
+                text=element_text(size=12, family="sans")) +
+            scale_x_continuous(name=massScaleTxt, limits=c(-maxPpmErr, maxPpmErr)) +
+            scale_color_manual(values = colors) +
+            annotate(geom="text", x1, y1, label=txt1, color=colors[1]) +
+            annotate(geom="text", x2, y2, label=txt2, color=colors[2])
+}
 
 p <- arrangeGrob(gd, g, widths = c(1, 2), ncol=2,
     top = textGrob(opt$options$name,gp=gpar(fontsize=12)))
