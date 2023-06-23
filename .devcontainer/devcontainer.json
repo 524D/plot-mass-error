@@ -9,7 +9,11 @@
         "ghcr.io/wxw-matt/devcontainer-features/apt:latest": {
 			"packages": "gfortran liblapack-dev libblas-dev"},
 		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-            "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra"}
+            "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra,BiocManager"},
+        "ghcr.io/wxw-matt/devcontainer-features/command_runner:latest": {
+            "command1": "Rscript -e 'BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\");'"
+        }
+    
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -19,7 +23,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "Rscript -e \"BiocManager::install(version = \\\"3.16\\\"); BiocManager::install(\\\"MSnbase\\\");\"",
+	// "postCreateCommand": "Rscript -e \"BiocManager::install(version = \\\"3.17\\\"); BiocManager::install(\\\"MSnbase\\\");\"",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
