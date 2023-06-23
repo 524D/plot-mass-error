@@ -46,8 +46,11 @@ make_option(c("-o", "--outfile"), default = "", action='store',
 make_option(c("-L", "--nolegend"), default = FALSE, action='store_true',
             help = "If set, no legend is shown."),
 make_option(c("-n", "--name"), default = "", action='store',
-            help = "Name of data, printed at top of picture.")
-
+            help = "Name of data, printed at top of picture."),
+make_option(c("-l", "--legend"), default = "", action='store',
+            help = "Legend for each input file. Default is the filename"),
+make_option(c("-c", "--colors"), default = "", action='store',
+            help = "Colors used for each input file, encoded in hex like \"#F000A0,#00B000\"")
 )
 
 parser <- OptionParser(option_list = optionList)
@@ -64,7 +67,17 @@ if (opt$options$outfile == "") {
 # Test colors with: https://www.color-blindness.com/coblis-color-blindness-simulator/
 # Use magenta instead of red, that's better according to some sources
 colors<-c("#F000A0", "#00B000")
+if (opt$options$colors != "" ) {
+    colors <- strsplit(opt$options$colors, ",")[[1]]
+}
+
 classNames<-c("original","recalibrated")
+if (opt$options$legend == "" ) {
+    classNames <- opt$args
+} else {
+    classNames <- strsplit(opt$options$legend, ",")[[1]]
+}
+print(classNames)
 maxPpmErr = opt$options$ppmerr
 
 mzIdVals <- getMzId(opt$args[1], classNames[1], opt$options$exp, maxPpmErr)
