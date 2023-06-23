@@ -10,6 +10,7 @@ suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(grid))
 suppressPackageStartupMessages(library(gridExtra))
 
+pdf(NULL) # Prevent generation of Rplots.pdf
 
 getMzId<-function(fileName, className, cometExpLim, maxPpmErr)
 {
