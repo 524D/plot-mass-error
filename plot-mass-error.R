@@ -77,7 +77,6 @@ if (opt$options$legend == "" ) {
 } else {
     classNames <- strsplit(opt$options$legend, ",")[[1]]
 }
-print(classNames)
 maxPpmErr = opt$options$ppmerr
 
 mzIdVals <- getMzId(opt$args[1], classNames[1], opt$options$exp, maxPpmErr)
@@ -137,7 +136,7 @@ if (length(opt$args)>1) {
 
 myLegendPos <- "none";
 if (!opt$options$nolegend) {
-    myLegendPos <- c(0.85, 0.91);
+    myLegendPos <- c(0.35, 0.91);
 }
 g <- ggplot(mzidGood, aes(x=calculatedMassToCharge, y=ppmErr, colour = class))+
         theme(axis.title.y=element_blank(),
