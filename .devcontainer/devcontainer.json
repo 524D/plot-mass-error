@@ -11,7 +11,7 @@
 		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
             "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra,BiocManager"},
         "ghcr.io/wxw-matt/devcontainer-features/command_runner:latest": {
-            "command1": "Rscript -e 'BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\");'"
+            "command1": "Rscript -e 'if (!requireNamespace(\"BiocManager\", quietly = TRUE)) { install.packages(\"BiocManager\"); } BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\");'"
         }
     
 	},
