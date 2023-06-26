@@ -5,10 +5,20 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
-		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {},
-		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-            "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra"}
-	},
+        "ghcr.io/wxw-matt/devcontainer-features/apt:latest": {
+			"packages": "gfortran liblapack-dev libblas-dev libxml2-dev"},
+        "ghcr.io/rocker-org/devcontainer-features/r-apt:0": {},
+        "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+            "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra,BiocManager"},
+        "ghcr.io/wxw-matt/devcontainer-features/command_runner:latest": {
+            "command1": " Rscript -e 'if (!requireNamespace(\"BiocManager\", quietly = TRUE)) install.packages(\"BiocManager\"); BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\")'"}
+        },
+    "overrideFeatureInstallOrder": [
+            "ghcr.io/wxw-matt/devcontainer-features/apt",
+            "ghcr.io/rocker-org/devcontainer-features/r-apt",
+            "ghcr.io/rocker-org/devcontainer-features/r-packages",
+            "ghcr.io/wxw-matt/devcontainer-features/command_runner"
+        ]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -17,7 +27,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "Rscript -e \"BiocManager::install(version = \\\"3.16\\\"); BiocManager::install(\\\"MSnbase\\\");\"",
+	// "postCreateCommand": "Rscript -e \"BiocManager::install(version = \\\"3.17\\\"); BiocManager::install(\\\"MSnbase\\\");\"",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
