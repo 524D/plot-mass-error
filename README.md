@@ -11,7 +11,7 @@ Note: installation must be executed with root (Linux)/ Administrator (Windows) p
 * Install R from https://cran.r-project.org/ 
 * Start R:
     ```
-    cd "\Program Files\R\R-4.1.0"
+    cd "\Program Files\R\R-4.3.0"
     R
     ```
 * Install standard R packages, install BioConductor and install MSnbase. From the R command prompt:
@@ -19,7 +19,7 @@ Note: installation must be executed with root (Linux)/ Administrator (Windows) p
     install.packages(c("stringr", "futile.logger", "optparse", "ggplot2", "gridExtra"))
     if (!requireNamespace("BiocManager", quietly = TRUE))
         install.packages("BiocManager")
-    BiocManager::install(version = "3.14")
+    BiocManager::install(version = "3.17")
     BiocManager::install("MSnbase")
     ```
 
