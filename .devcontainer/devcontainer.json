@@ -9,9 +9,9 @@
 			"packages": "gfortran liblapack-dev libblas-dev libxml2-dev libnetcdf-dev"},
         "ghcr.io/rocker-org/devcontainer-features/r-apt:0": {},
         "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-            "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra,BiocManager"}
-//        "ghcr.io/wxw-matt/devcontainer-features/command_runner:latest": {
-//            "command1": "Rscript -e 'install.packages(\"BiocManager\"); library(BiocManager); BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\")'"}
+            "packages": "stringr,futile.logger,optparse,ggplot2,gridExtra,BiocManager"},
+        "ghcr.io/wxw-matt/devcontainer-features/command_runner:latest": {
+            "command1": "Rscript -e 'library(BiocManager); BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\");'"}
         },
     "overrideFeatureInstallOrder": [
             "ghcr.io/wxw-matt/devcontainer-features/apt",
@@ -27,7 +27,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "Rscript -e 'install.packages(\"BiocManager\"); library(BiocManager); BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\");'"
+//	"postCreateCommand": "Rscript -e 'library(BiocManager); BiocManager::install(version = \"3.17\"); BiocManager::install(\"MSnbase\");'"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
